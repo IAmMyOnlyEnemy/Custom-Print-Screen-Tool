@@ -1,0 +1,12 @@
+virtual environment CPST
+CPST/Scripts/Activate.ps1
+pip install -r requirements.txt
+deactivate
+
+To do:
+1 - multiple images process
+ * define logic for subjects
+ * define logic for verbs
+2 - configure Capture button to act according to active tab
+3 - add a time delay option
+4 - make a simplified version
