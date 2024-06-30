@@ -7,8 +7,7 @@ import win32clipboard
 from tkinter.filedialog import askdirectory
 from io import BytesIO
 
-numbers_vals = ["{:02d}".format(x) for x in range(1,11)]
-
+numbers_vals = ["{:02d}".format(x) for x in range(1,16)]
 letters_vals = [chr(x) for x in range(65,75)]
 
 # Create a dictionary with settings imported from a json file or default if there is no json:
@@ -82,7 +81,7 @@ class App(ctk.CTk):
 
         # 1st row:
         self.label_img_name = ctk.CTkLabel(master=self.tabview_imgs.tab(tab_names[0]), 
-                            text="", font=ctk.CTkFont(size=12, weight="bold"))#,width=200)
+                            text="", font=ctk.CTkFont(size=12, weight="bold"))
         self.label_img_name.grid(row=0, column=0, columnspan=5, padx=(10, 0), pady=(5, 5), sticky="snew")
 
         # 2nd row:
@@ -95,7 +94,7 @@ class App(ctk.CTk):
             switch = ctk.CTkSwitch(master=self.tabview_imgs.tab(tab_names[0]),text="",width=40, 
                                     variable=self.tabview_imgs_switches_var[i],onvalue=1,offvalue=0)
             if i > 1:
-                switch.grid(row=2,column=i+1,padx=(15,5),pady=(5,5),sticky="nwes")    
+                switch.grid(row=2,column=i+1,padx=(20,0),pady=(5,5),sticky="news")    
             else:
                 switch.grid(row=2,column=i,padx=(15,5),pady=(5,5),sticky="nwes")
             self.tabview_imgs_switches.append(switch)
@@ -104,17 +103,17 @@ class App(ctk.CTk):
         self.test_var = tkinter.StringVar(value=numbers_vals[0])
         self.optionemenu_test = ctk.CTkOptionMenu(master=self.tabview_imgs.tab(tab_names[0]),command=self.OM_event, 
                                     values=numbers_vals[:10],variable=self.test_var,width=50)
-        self.optionemenu_test.grid(row=1,column=0,padx=(5,5),pady=(5,5),sticky="wn")
+        self.optionemenu_test.grid(row=1,column=0,padx=(0,5),pady=(5,5),sticky="en")
 
         self.subtest_var = tkinter.StringVar(value=letters_vals[0])
         self.optionemenu_subtest = ctk.CTkOptionMenu(master=self.tabview_imgs.tab(tab_names[0]),command=self.OM_event, 
                                     values=letters_vals,variable=self.subtest_var,width=50)
-        self.optionemenu_subtest.grid(row=1,column=1,padx=(5,5),pady=(5,5),sticky="wn")
+        self.optionemenu_subtest.grid(row=1,column=1,padx=(5,5),pady=(5,5),sticky="en")
 
         self.iter_var = tkinter.StringVar(value=numbers_vals[0])
         self.optionemenu_iter = ctk.CTkOptionMenu(master=self.tabview_imgs.tab(tab_names[0]),command=self.OM_event, 
                                     values=numbers_vals,variable=self.iter_var,width=50)
-        self.optionemenu_iter.grid(row=1,column=4,padx=(5,5),pady=(5,5),sticky="wn")
+        self.optionemenu_iter.grid(row=1,column=4,padx=(5,0),pady=(5,5),sticky="en")
 
         #4th row:
         self.label_line = ctk.CTkLabel(master=self.tabview_imgs.tab(tab_names[0]),text="")
@@ -124,7 +123,7 @@ class App(ctk.CTk):
         self.new_img_name_entry = ctk.CTkEntry(master=self.tabview_imgs.tab(tab_names[0]),
                                                 placeholder_text="-",textvariable=self.img_name_var,
                                                 width=120,height=20)
-        self.new_img_name_entry.grid(row=4,column=0,columnspan=2,padx=(5, 5),pady=(5, 5),sticky="snew")
+        self.new_img_name_entry.grid(row=4,column=0,columnspan=2,padx=(5,5),pady=(5,5),sticky="snew")
         self.new_img_name_entry.bind("<Return>", self.new_img_event)
         self.img_name_var.set(img_vals[0])
 
@@ -136,18 +135,26 @@ class App(ctk.CTk):
         self.button_down.grid(row=5, column=1, padx=(5, 5), pady=(5, 5), sticky="snew")
         self.button_delete = ctk.CTkButton(master=self.tabview_imgs.tab(tab_names[0]),text="Delete",width=100,
                                             command=self.delete_button_event)
-        self.button_delete.grid(row=6, column=0, columnspan=2, padx=(5, 5), pady=(5, 5), sticky="snew")
+        self.button_delete.grid(row=6, column=0, columnspan=2, padx=(5,5), pady=(5,5), sticky="snew")
 
         for i in range(2):
             self.label_line = ctk.CTkLabel(master=self.tabview_imgs.tab(tab_names[0]),text="")
-            self.label_line.grid(row=6+i, column=0, padx=(5, 5), pady=(5, 5), sticky="w")
+            self.label_line.grid(row=6+i, column=0, padx=(5,5), pady=(5,5), sticky="w")
 
         self.frame_img_list = ctk.CTkScrollableFrame(master=self.tabview_imgs.tab(tab_names[0]),width=180)
-        self.frame_img_list.grid(row=1,rowspan=8,column=2,padx=(5, 5),pady=(5, 5),sticky="snew")
+        self.frame_img_list.grid(row=1,rowspan=8,column=2,padx=(5,5),pady=(5,5),sticky="snew")
 
         self.img_var_list = tkinter.StringVar(value=img_vals[0])
         self.imgs_radios = []
         self.fill_img_radios()
+
+        self.label_delay = ctk.CTkLabel(master=self.tabview_imgs.tab(tab_names[0]),text="No delay")
+        self.label_delay.grid(row=4, column=3, columnspan=2, padx=(5,5), pady=(5,5), sticky="w")
+        self.delay_var = tkinter.IntVar(value=0)
+        self.delay_slider = ctk.CTkSlider(master=self.tabview_imgs.tab(tab_names[0]),width=5,
+                                            from_=0,to=5,number_of_steps=6,variable=self.delay_var,
+                                            command=self.update_delay_val)
+        self.delay_slider.grid(row=5,column=3,columnspan=2,padx=(0,0),pady=(5,20),sticky="snew")
 
     #           #------------------------------------------------------------------------------- #
     #           #                                                                                #
@@ -486,6 +493,15 @@ class App(ctk.CTk):
         for i in range(len(self.radio_config_list)):
             self.radio_config_list[i].configure(text=self.conf_desc_vals[i].get())
 
+    def update_delay_val(self,slide_val):
+        # slide_val is default variable for slider command call. I don't need it
+        if self.delay_var.get() == 0:
+            self.label_delay.configure(text="No delay")
+        else:
+            if self.delay_var.get() == 1:
+                self.label_delay.configure(text="Delay {0} second".format(self.delay_var.get()))
+            else:
+                self.label_delay.configure(text="Delay {0} seconds".format(self.delay_var.get()))
 
 
 # ------------------------------------------------------------------------------------------ #
